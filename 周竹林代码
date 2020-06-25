@@ -1,0 +1,42 @@
+#DrawCurBox(bDraw), 绘制当前移动中的方块, bDraw为1, 画上, bDraw为0, 抹去方块。
+function DrawCurBox()
+{
+        local i j t bDraw sBox s
+        bDraw=$1
+ 
+        s=""
+        if (( bDraw == 0 ))
+        then
+                sBox="\040\040"
+        else
+                sBox="[]"
+                s=$s"\033[1m\033[7m\033[3${cBoxCur}m\033[4${cBoxCur}m"
+        fi
+ 
+        for ((j = 0; j < 8; j += 2))
+        do
+                ((i = iTrayTop + 1 + ${boxCur[$j]} + boxCurY))
+                ((t = iTrayLeft + 1 + 2 * (boxCurX + ${boxCur[$j + 1]})))
+                #\033[y;xH, 光标到(x, y)处
+                s=$s"\033[${i};${t}H${sBox}"
+        done
+        s=$s"\033[0m"
+        echo -n $s
+}
+ 
+ 
+#更新新的方块
+function RandomBox()
+{
+        local i j t
+ 
+        #更新当前移动的方块
+        iBoxCurType=${iBoxNewType}
+        iBoxCurRotate=${iBoxNewRotate}
+        cBoxCur=${cBoxNew}
+        for ((j = 0; j < ${#boxNew[@]}; j++))
+        do
+                boxCur[$j]=${boxNew[$j]}
+        done
+ 
+ 
