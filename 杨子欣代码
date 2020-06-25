@@ -1,0 +1,27 @@
+#显示当前移动的方块
+        if (( ${#boxCur[@]} == 8 ))
+        then
+                #计算当前方块该从顶端哪一行"冒"出来
+                for ((j = 0, t = 4; j < 8; j += 2))
+                do
+                        if ((${boxCur[$j]} < t)); then t=${boxCur[$j]}; fi
+                done
+                ((boxCurY = -t))
+                for ((j = 1, i = -4, t = 20; j < 8; j += 2))
+                do
+                        if ((${boxCur[$j]} > i)); then i=${boxCur[$j]}; fi
+                        if ((${boxCur[$j]} < t)); then t=${boxCur[$j]}; fi
+                done
+                ((boxCurX = (iTrayWidth - 1 - i - t) / 2))
+ 
+                #显示当前移动的方块
+                echo -ne `DrawCurBox 1`
+ 
+                #如果方块一出来就没处放，Game over!
+                if ! BoxMove $boxCurY $boxCurX
+                then
+                        kill -$sigExit ${PPID}
+                        ShowExit
+                fi
+        fi
+ 
