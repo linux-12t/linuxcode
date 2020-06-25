@@ -1,0 +1,29 @@
+       #清除右边预显示的方块
+        for ((j = 0; j < 4; j++))
+        do
+                ((i = iTop + 1 + j))
+                ((t = iLeft + 2 * iTrayWidth + 7))
+                echo -ne "\033[${i};${t}H        "
+        done
+ 
+        #随机产生新的方块
+        ((iBoxNewType = RANDOM % ${#offsetBox[@]}))
+        ((iBoxNewRotate = RANDOM % ${countBox[$iBoxNewType]}))
+        for ((j = 0, i = (${offsetBox[$iBoxNewType]} + $iBoxNewRotate) * 8; j < 8; j++, i++))
+        do
+                boxNew[$j]=${box[$i]};
+        done
+ 
+        ((cBoxNew = ${colorTable[RANDOM % ${#colorTable[@]}]}))
+ 
+        #显示右边预显示的方块
+        echo -ne "\033[1m\033[7m\033[3${cBoxNew}m\033[4${cBoxNew}m"
+        for ((j = 0; j < 8; j += 2))
+        do
+                ((i = iTop + 1 + ${boxNew[$j]}))
+                ((t = iLeft + 2 * iTrayWidth + 7 + 2 * ${boxNew[$j + 1]}))
+                echo -ne "\033[${i};${t}H[]"
+        done
+        echo -ne "\033[0m"
+}
+ 
