@@ -1,0 +1,44 @@
+function InitDraw()
+{
+        clear
+        RandomBox        #随机产生方块，这时右边预显示窗口中有方快了
+        RandomBox        #再随机产生方块，右边预显示窗口中的方块被更新，原先的方块将开始下落
+        local i t1 t2 t3
+ 
+        #显示边框
+        echo -ne "\033[1m"
+        echo -ne "\033[3${cBorder}m\033[4${cBorder}m"
+ 
+        ((t2 = iLeft + 1))
+        ((t3 = iLeft + iTrayWidth * 2 + 3))
+        for ((i = 0; i < iTrayHeight; i++))
+        do
+                ((t1 = i + iTop + 2))
+                echo -ne "\033[${t1};${t2}H||"
+                echo -ne "\033[${t1};${t3}H||"
+        done
+ 
+        ((t2 = iTop + iTrayHeight + 2))
+        for ((i = 0; i < iTrayWidth + 2; i++))
+        do
+                ((t1 = i * 2 + iLeft + 1))
+                echo -ne "\033[${iTrayTop};${t1}H=="
+                echo -ne "\033[${t2};${t1}H=="
+        done
+        echo -ne "\033[0m"
+ 
+ 
+        #显示"Score"和"Level"字样
+        echo -ne "\033[1m"
+        ((t1 = iLeft + iTrayWidth * 2 + 7))
+        ((t2 = iTop + 10))
+        echo -ne "\033[3${cScore}m\033[${t2};${t1}HScore"
+        ((t2 = iTop + 11))
+        echo -ne "\033[3${cScoreValue}m\033[${t2};${t1}H${iScore}"
+        ((t2 = iTop + 13))
+        echo -ne "\033[3${cScore}m\033[${t2};${t1}HLevel"
+        ((t2 = iTop + 14))
+        echo -ne "\033[3${cScoreValue}m\033[${t2};${t1}H${iLevel}"
+        echo -ne "\033[0m"
+}
+ 
