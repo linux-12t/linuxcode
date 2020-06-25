@@ -1,0 +1,62 @@
+#处理显示和游戏流程的主函数
+function RunAsDisplayer()
+{
+        local sigThis
+        InitDraw
+ 
+        #挂载各种信号的处理函数
+        trap "sig=$sigRotate;" $sigRotate
+        trap "sig=$sigLeft;" $sigLeft
+        trap "sig=$sigRight;" $sigRight
+        trap "sig=$sigDown;" $sigDown
+        trap "sig=$sigAllDown;" $sigAllDown
+        trap "ShowExit;" $sigExit
+ 
+        while :
+        do
+                #根据当前的速度级iLevel不同，设定相应的循环的次数
+                for ((i = 0; i < 21 - iLevel; i++))
+                do
+                        sleep 0.02
+                        sigThis=$sig
+                        sig=0
+ 
+                        #根据sig变量判断是否接受到相应的信号
+                        if ((sigThis == sigRotate)); then BoxRotate;        #旋转
+                        elif ((sigThis == sigLeft)); then BoxLeft;        #左移一列
+                        elif ((sigThis == sigRight)); then BoxRight;        #右移一列
+                        elif ((sigThis == sigDown)); then BoxDown;        #下落一行
+                        elif ((sigThis == sigAllDown)); then BoxAllDown;        #下落到底
+                        fi
+                done
+                #kill -$sigDown $$
+                BoxDown        #下落一行
+        done
+}
+ 
+ 
+#BoxMove(y, x), 测试是否可以把移动中的方块移到(x, y)的位置, 返回0则可以, 1不可以
+function BoxMove()
+{
+        local j i x y xTest yTest
+        yTest=$1
+        xTest=$2
+        for ((j = 0; j < 8; j += 2))
+        do
+                ((i = j + 1))
+                ((y = ${boxCur[$j]} + yTest))
+                ((x = ${boxCur[$i]} + xTest))
+                if (( y < 0 || y >= iTrayHeight || x < 0 || x >= iTrayWidth))
+                then
+                        #撞到墙壁了
+                        return 1
+                fi
+                if ((${iMap[y * iTrayWidth + x]} != -1 ))
+                then
+                        #撞到其他已经存在的方块了
+                        return 1
+                fi
+        done
+        return 0;
+}
+ 
